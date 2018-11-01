@@ -29,6 +29,11 @@ public class TicketServiceTest {
 		Ticket ticket = ticketService.createTicket(3);
 		assertNotNull(ticket);
 	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testCreateTicketIllegalArgumentException() {
+		ticketService.createTicket(-1);
+	}
 
 	@Test
 	public void testGetTickets() {
@@ -46,12 +51,28 @@ public class TicketServiceTest {
 		assertEquals(ticket.getId(), retrievedTicket.getId());
 	}
 	
+
 	@Test
 	public void testAmendTicketLines() {
 		Ticket ticket = ticketService.createTicket(3);
 		ticket = ticketService.amendTicketLines(ticket, 2);
-		assertEquals(ticket.getTicketLines().size(), 2);
+		assertEquals(2, ticket.getTicketLines().size());
 	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testAmendTicketLinesIllegalArgumentException() {
+		Ticket ticket = ticketService.createTicket(3);
+		ticket = ticketService.amendTicketLines(ticket, -1);
+	}
+	
+	
+	@Test(expected=IllegalAccessError.class)
+	public void testAmendTicketLinesIllegalAccessError() {
+		Ticket ticket = ticketService.createTicket(3);
+		ticket.setChecked(true);
+		ticket = ticketService.amendTicketLines(ticket, 4);
+	}
+	
 	
 	@Test
 	public void testCheckTicketStatus() {
@@ -59,9 +80,6 @@ public class TicketServiceTest {
 		TicketStatus ticketStatus = ticketService.checkTicket(ticket);
 		assertNotNull(ticketStatus);
 	}
-	
-	
-	
 	
 	
 }
