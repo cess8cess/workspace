@@ -22,7 +22,7 @@ import com.nrc.strategy.StandartResultCalculationStrategy;
 @Service
 public class TicketService implements ITicketService {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	@Autowired
 	TicketRepository ticketRepository;
 
@@ -37,7 +37,7 @@ public class TicketService implements ITicketService {
 
 	@Override
 	public Ticket createTicket(int numLines) throws IllegalArgumentException {
-		if(numLines <= 0) {
+		if (numLines <= 0) {
 			throw new IllegalArgumentException();
 		}
 		Ticket ticket = new Ticket(produceLines(numLines));
@@ -46,13 +46,13 @@ public class TicketService implements ITicketService {
 
 	@Override
 	public Ticket amendTicketLines(Ticket ticket, int numLines) throws IllegalArgumentException, IllegalAccessError {
-		if(numLines <= 0) {
+		if (numLines <= 0) {
 			throw new IllegalArgumentException();
 		}
-		if(ticket.isChecked()) {
+		if (ticket.isChecked()) {
 			throw new IllegalAccessError();
 		}
-		ticket = new Ticket(produceLines(numLines));
+		ticket = new Ticket(produceLines(numLines), ticket.getId());
 		return ticketRepository.save(ticket);
 	}
 
@@ -66,7 +66,6 @@ public class TicketService implements ITicketService {
 		return ticketRepository.findOne(id);
 	}
 
-	
 	@Override
 	public TicketStatus checkTicket(Ticket ticket) {
 		// mark the ticket as checked
@@ -75,11 +74,11 @@ public class TicketService implements ITicketService {
 
 		// setting strategy
 		resultCalculationContext.setCalculationStrategy(new StandartResultCalculationStrategy());
-		
+
 		// ticket line result calculation
 		ticket.getTicketLines()
 				.forEach(line -> line.setResult(resultCalculationContext.calculateResult(line.getNumbers())));
-		
+
 		// ticket lines sorting
 		Collections.sort(ticket.getTicketLines(), (o1, o2) -> o2.getResult() - o1.getResult());
 
@@ -87,18 +86,15 @@ public class TicketService implements ITicketService {
 
 	}
 
-	
-	/**
-	 * Produce lines.
+	/** Produce lines.
 	 *
 	 * @param indicates how many lines will be generated
-	 * @return TicketLine List
-	 */
+	 * @return TicketLine List */
 	private List<TicketLine> produceLines(int numLines) {
 		List<TicketLine> lines = new ArrayList<>();
 		// setting strategy
 		numberGenerationContext.setGenerationStrategy(new StandartNumberGenerationStrategy());
-		
+
 		for (int i = 0; i < numLines; i++) {
 			lines.add(new TicketLine(numberGenerationContext.generate()));
 		}
