@@ -3,9 +3,7 @@ package com.nrc;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-/**
- * The Class LotteryApplication.
- */
+/** The Class LotteryApplication. */
 @SpringBootApplication
 public class LotteryApplication {
 

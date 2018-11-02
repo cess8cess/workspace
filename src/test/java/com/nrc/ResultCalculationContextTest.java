@@ -26,90 +26,62 @@ public class ResultCalculationContextTest {
 
 	@Autowired
 	ResultCalculationContext context;
-	
+
 	@Autowired
 	ITicketService ticketService;
-	
-	
+
 	@Test
 	public void testStandartResultCalculationForResult10() {
 		context.setCalculationStrategy(new StandartResultCalculationStrategy());
-		
-		int[] [] arr = {
-				new int [] {0,1,1},
-				new int [] {1,0,1},
-				new int [] {1,1,0}, 
-				new int [] {2,0,0}, 
-				new int [] {0,2,0}, 
-				new int [] {0,0,2}
-				};
-		
+
+		int[][] arr = { new int[] { 0, 1, 1 }, new int[] { 1, 0, 1 }, new int[] { 1, 1, 0 }, new int[] { 2, 0, 0 },
+				new int[] { 0, 2, 0 }, new int[] { 0, 0, 2 } };
+
 		for (int[] is : arr) {
-			assertEquals(10, context.calculateResult(is)); 
+			assertEquals(10, context.calculateResult(is));
 		}
-		
+
 	}
-	
-	
-	
+
 	@Test
 	public void testStandartResultCalculationForResult5() {
 		context.setCalculationStrategy(new StandartResultCalculationStrategy());
-		
-		int[] [] arr = {
-				new int [] {0,0,0},
-				new int [] {1,1,1},
-				new int [] {2,2,2},
-				};
-		
+
+		int[][] arr = { new int[] { 0, 0, 0 }, new int[] { 1, 1, 1 }, new int[] { 2, 2, 2 }, };
+
 		for (int[] is : arr) {
-			assertEquals(5, context.calculateResult(is)); 
+			assertEquals(5, context.calculateResult(is));
 		}
-		
+
 	}
-	
+
 	@Test
 	public void testStandartResultCalculationForResult1() {
 		context.setCalculationStrategy(new StandartResultCalculationStrategy());
-		
-		int[] [] arr = {
-				new int [] {0,1,2},
-				new int [] {0,2,1},
-				new int [] {1,0,0},
-				new int [] {1,2,0},
-				new int [] {1,0,2},
-				new int [] {2,1,0},
-				new int [] {2,0,1},
-				new int [] {2,1,1},
-				new int [] {0,2,2},
-				new int [] {1,2,2},
-				};
-		
+
+		int[][] arr = { new int[] { 0, 1, 2 }, new int[] { 0, 2, 1 }, new int[] { 1, 0, 0 }, new int[] { 1, 2, 0 },
+				new int[] { 1, 0, 2 }, new int[] { 2, 1, 0 }, new int[] { 2, 0, 1 }, new int[] { 2, 1, 1 },
+				new int[] { 0, 2, 2 }, new int[] { 1, 2, 2 }, };
+
 		for (int[] is : arr) {
-			assertEquals(1, context.calculateResult(is)); 
+			assertEquals(1, context.calculateResult(is));
 		}
-		
+
 	}
-	
+
 	@Test
 	public void testStandartResultCalculationForResult0() {
 		context.setCalculationStrategy(new StandartResultCalculationStrategy());
-		
-		int[] [] arr = {
-				new int [] {0,0,1},
-				new int [] {0,1,0},
-				new int [] {1,1,2}, 
-				new int [] {1,2,1}, 
-				new int [] {2,1,2}, 
-				new int [] {2,2,1}
-				};
-		
+
+		int[][] arr = { new int[] { 0, 0, 1 }, new int[] { 0, 1, 0 }, new int[] { 1, 1, 2 }, new int[] { 1, 2, 1 },
+				new int[] { 2, 1, 2 }, new int[] { 2, 2, 1 } };
+
 		for (int[] is : arr) {
-			assertEquals(0, context.calculateResult(is)); 
+			assertEquals(0, context.calculateResult(is));
 		}
-		
+
 	}
-	
+
 	@Test
 	public void TestLinesResultSorting() {
 		Ticket ticket = produceTicket();
@@ -119,13 +91,13 @@ public class ResultCalculationContextTest {
 		assertEquals(ticketStatus.getResultList().get(2).getResult(), 1);
 		assertEquals(ticketStatus.getResultList().get(3).getResult(), 0);
 	}
-	
+
 	private Ticket produceTicket() {
-		int [] numbers10 = {1,1,0};
-		int [] numbers5 = {1,1,1};
-		int [] numbers1 = {2,1,0};
-		int [] numbers0 = {2,1,2};
-		
+		int[] numbers10 = { 1, 1, 0 };
+		int[] numbers5 = { 1, 1, 1 };
+		int[] numbers1 = { 2, 1, 0 };
+		int[] numbers0 = { 2, 1, 2 };
+
 		List<TicketLine> ticketLines = new ArrayList<>();
 		ticketLines.add(new TicketLine(numbers10));
 		ticketLines.add(new TicketLine(numbers5));
@@ -135,6 +107,5 @@ public class ResultCalculationContextTest {
 		ticket.setChecked(false);
 		return ticket;
 	}
-	
 
 }

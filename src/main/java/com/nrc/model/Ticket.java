@@ -30,7 +30,7 @@ public class Ticket {
 		super();
 		this.ticketLines = ticketLines;
 	}
-	
+
 	public Ticket(List<TicketLine> ticketLines, long id) {
 		super();
 		this.id = id;

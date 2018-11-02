@@ -19,12 +19,12 @@ public class NumberGenerationContextTest {
 
 	@Autowired
 	NumberGenerationContext context;
-	
+
 	@Test
 	public void testStandartGenerationNumbers() {
 		context.setGenerationStrategy(new StandartNumberGenerationStrategy());
 		int[] numbers = context.generate();
-		assertTrue(numbers.length > 0 );
+		assertTrue(numbers.length > 0);
 		for (int i : numbers) {
 			assertTrue(i < StandartNumberGenerationStrategy.NUMBER_COUNT);
 		}
