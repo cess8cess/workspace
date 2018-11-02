@@ -9,7 +9,7 @@ public class StandartNumberGenerationStrategy implements INumberGenerationStrate
 	public int[] generate() {
 		int[] numbers = new int[NUMBER_COUNT];
 		// fills the array with generated random values
-		Arrays.setAll(numbers, num -> new Random().nextInt(NUMBER_COUNT));
+		Arrays.parallelSetAll(numbers, num -> new Random().nextInt(NUMBER_COUNT));
 		return numbers;
 	}
 
