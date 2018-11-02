@@ -52,7 +52,7 @@ public class TicketService implements ITicketService {
 		if (ticket.isChecked()) {
 			throw new IllegalAccessError();
 		}
-		ticket = new Ticket(produceLines(numLines), ticket.getId());
+		ticket.setTicketLines(produceLines(numLines));
 		return ticketRepository.save(ticket);
 	}
 

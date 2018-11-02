@@ -13,7 +13,7 @@ API
 
 Create Ticket
 Http Method: POST
-/ticket
+/ticket 
 Request Sample: http://localhost:9090/ticket?lineNumber=3
 Response Sample: {"id":1,"ticketLines":[{"numbers":[2,0,2]},{"numbers":[2,0,2]},{"numbers":[0,1,1]}],"checked":false}
 
