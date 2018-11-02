@@ -3,6 +3,7 @@ package com.nrc.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,8 +63,8 @@ public class TicketService implements ITicketService {
 	}
 
 	@Override
-	public Ticket getTicketById(long id) {
-		return ticketRepository.findOne(id);
+	public Optional<Ticket> getTicketById(long id) {
+		return ticketRepository.findById(id);
 	}
 
 	@Override

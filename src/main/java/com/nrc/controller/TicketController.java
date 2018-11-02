@@ -63,7 +63,7 @@ public class TicketController implements ITicketController {
 	@Override
 	@GetMapping("/ticket/{id}")
 	public Ticket getTicketById(@PathVariable long id) {
-		return Optional.ofNullable(ticketService.getTicketById(id)).orElseThrow(TicketNotFoundException::new);
+		return ticketService.getTicketById(id).orElseThrow(TicketNotFoundException::new);
 	}
 
 	/*
@@ -75,7 +75,7 @@ public class TicketController implements ITicketController {
 	@Override
 	@PutMapping("/ticket/{id}")
 	public Ticket amendTicket(@PathVariable long id, @RequestParam("lineNumber") int lineNumber) {
-		Ticket ticket = Optional.ofNullable(ticketService.getTicketById(id)).orElseThrow(TicketNotFoundException::new);
+		Ticket ticket = ticketService.getTicketById(id).orElseThrow(TicketNotFoundException::new);
 
 		// throw exception if ticket was checked
 		if (ticket.isChecked()) {
@@ -94,7 +94,7 @@ public class TicketController implements ITicketController {
 	@Override
 	@PutMapping("/status/{id}")
 	public TicketStatus checkTicket(@PathVariable long id) {
-		Ticket ticket = Optional.ofNullable(ticketService.getTicketById(id)).orElseThrow(TicketNotFoundException::new);
+		Ticket ticket = ticketService.getTicketById(id).orElseThrow(TicketNotFoundException::new);
 
 		return Optional.ofNullable(ticketService.checkTicket(ticket)).orElseThrow(InternalException::new);
 	}

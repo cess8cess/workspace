@@ -47,7 +47,7 @@ public class TicketServiceTest {
 	@Test
 	public void testGetTicketById() {
 		Ticket ticket = ticketService.createTicket(3);
-		Ticket retrievedTicket = ticketService.getTicketById(ticket.getId());
+		Ticket retrievedTicket = ticketService.getTicketById(ticket.getId()).get();
 		assertEquals(ticket.getId(), retrievedTicket.getId());
 	}
 

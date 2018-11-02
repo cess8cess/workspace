@@ -2,6 +2,7 @@
 package com.nrc.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.nrc.model.Ticket;
 import com.nrc.model.TicketStatus;
@@ -33,8 +34,8 @@ public interface ITicketService {
 	/** Gets the ticket by id.
 	 *
 	 * @param id the id
-	 * @return the ticket by id */
-	Ticket getTicketById(long id);
+	 * @return the Optional<Ticket> by id */
+	Optional<Ticket> getTicketById(long id);
 
 	/** Check the status of the ticket.
 	 *

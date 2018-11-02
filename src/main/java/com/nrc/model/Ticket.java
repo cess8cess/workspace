@@ -10,10 +10,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "tickets")
+@SequenceGenerator(name = "ticketsSeq")
 public class Ticket {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

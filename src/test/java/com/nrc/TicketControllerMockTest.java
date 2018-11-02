@@ -8,12 +8,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import com.nrc.context.ResultCalculationContext;
 import com.nrc.controller.TicketController;
@@ -38,13 +39,12 @@ public class TicketControllerMockTest {
 	@Test(expected = InvalidLineNumberException.class)
 	public void testCreateTicketInvalidLineNumberException() {
 		ticketController.createTicket(0);
-
 	}
 
 	@Test
 	public void testCreateTicket() {
-		Ticket fetchedTicket = produceTicket();
-		when(ticketService.createTicket(3)).thenReturn(fetchedTicket);
+		Optional<Ticket> fetchedTicket = produceTicket();
+		when(ticketService.createTicket(3)).thenReturn(fetchedTicket.get());
 		assertNotNull(ticketController.createTicket(3));
 
 	}
@@ -54,7 +54,6 @@ public class TicketControllerMockTest {
 		when(ticketService.getTickets()).thenReturn(produceTickets(new int[][] { new int[] { 1, 0, 1 },
 				new int[] { 0, 0, 0 }, new int[] { 2, 0, 1 }, new int[] { 2, 2, 1 } }));
 		assertEquals(2, ticketController.getAllTickets().size());
-
 	}
 
 	@Test
@@ -66,60 +65,44 @@ public class TicketControllerMockTest {
 
 	@Test(expected = TicketNotFoundException.class)
 	public void testGetTicketByIdTicketNotFoundException() {
-		when(ticketService.getTicketById(1L)).thenReturn(produceTicket());
-		ticketController.getTicketById(-1L);
-
+		ticketController.getTicketById(1L);
 	}
 
 	@Test
 	public void testAmendTicket() {
-		Ticket fetchedTicket = produceTicket();
+		Optional<Ticket> fetchedTicket = produceTicket();
 		Ticket amendedTicket = produceAmendedTicket();
 		when(ticketService.getTicketById(1L)).thenReturn(fetchedTicket);
-		when(ticketService.amendTicketLines(fetchedTicket, 2)).thenReturn(amendedTicket);
+		when(ticketService.amendTicketLines(fetchedTicket.get(), 2)).thenReturn(amendedTicket);
 		assertEquals(2, ticketController.amendTicket(1L, 2).getTicketLines().size());
-
 	}
 
 	@Test(expected = TicketNotFoundException.class)
-	public void testAmendTicketNotFoundException() {
-		Ticket fetchedTicket = produceTicket();
-		Ticket amendedTicket = produceAmendedTicket();
-		when(ticketService.getTicketById(1L)).thenReturn(fetchedTicket);
-		when(ticketService.amendTicketLines(fetchedTicket, 2)).thenReturn(amendedTicket);
-		ticketController.amendTicket(-1L, 2);
-
+	public void testAmendTicketTicketNotFoundException() {
+		ticketController.amendTicket(1L, 2);
 	}
 
 	@Test(expected = TicketCheckedException.class)
 	public void testAmendTicketCheckedException() {
-		Ticket fetchedTicket = produceTicket();
-		fetchedTicket.setChecked(true);
-		Ticket amendedTicket = produceAmendedTicket();
+		Optional<Ticket> fetchedTicket = produceTicket();
+		fetchedTicket.get().setChecked(true);
 		when(ticketService.getTicketById(1L)).thenReturn(fetchedTicket);
-		when(ticketService.amendTicketLines(fetchedTicket, 2)).thenReturn(amendedTicket);
-
 		ticketController.amendTicket(1L, 2);
-
-	}
-
-	@Test(expected = TicketNotFoundException.class)
-	public void testCheckTicketNotFoundException() {
-		Ticket fetchedTicket = produceTicket();
-
-		when(ticketService.getTicketById(1L)).thenReturn(fetchedTicket);
-		ticketController.checkTicket(-1L);
-
 	}
 
 	@Test
 	public void testCheckTicket() {
-		Ticket fetchedTicket = produceTicket();
+		Optional<Ticket> fetchedTicket = produceTicket();
 
 		when(ticketService.getTicketById(1L)).thenReturn(fetchedTicket);
-		when(ticketService.checkTicket(fetchedTicket)).thenReturn(produceTicketStatus(fetchedTicket));
+		when(ticketService.checkTicket(fetchedTicket.get())).thenReturn(produceTicketStatus(fetchedTicket.get()));
 		assertNotNull(ticketController.checkTicket(1L));
 
+	}
+
+	@Test(expected = TicketNotFoundException.class)
+	public void testCheckTicketTicketNotFoundException() {
+		ticketController.checkTicket(1L);
 	}
 
 	private List<Ticket> produceTickets(int[][] lineNumbers) {
@@ -133,9 +116,9 @@ public class TicketControllerMockTest {
 		return ticketList;
 	}
 
-	private Ticket produceTicket() {
-		return produceTickets(new int[][] { new int[] { 1, 0, 1 }, new int[] { 0, 0, 0 }, new int[] { 2, 0, 1 },
-				new int[] { 2, 2, 1 } }).get(0);
+	private Optional<Ticket> produceTicket() {
+		return Optional.of(produceTickets(new int[][] { new int[] { 1, 0, 1 }, new int[] { 0, 0, 0 },
+				new int[] { 2, 0, 1 }, new int[] { 2, 2, 1 } }).get(0));
 	}
 
 	private Ticket produceAmendedTicket() {
