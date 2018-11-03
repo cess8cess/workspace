@@ -13,13 +13,13 @@ public class StandartResultCalculationStrategy implements IResultCalculationStra
 		IntPredicate p = num -> num == numbers[0];
 
 		if (Arrays.stream(numbers).sum() == RESULT_10) {
-			/** sum of the array elements equals 2 */
+			/** sum of the elements equals 2 */
 			return 10;
 		} else if (Arrays.stream(numbers).allMatch(p)) {
-			/** all elements of the array are equal */
+			/** all elements are equal */
 			return 5;
 		} else if (Arrays.stream(numbers).skip(1).noneMatch(p)) {
-			/** elements are different from 1st element */
+			/** elements except 1st are different from 1st element */
 			return 1;
 		}
 		return 0;
