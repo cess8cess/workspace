@@ -14,14 +14,14 @@ API
 Create Ticket
 Http Method: POST
 /ticket 
-Request Sample: http://localhost:9090/ticket?lineNumber=3
+Request Sample: http://localhost:9090/lottery/ticket?lineNumber=3
 Response Sample: {"id":1,"ticketLines":[{"numbers":[2,0,2]},{"numbers":[2,0,2]},{"numbers":[0,1,1]}],"checked":false}
 
 
 Retrieve List Of Tickets
 Http Method: GET
 /ticket
-Request Sample: http://localhost:9090/ticket
+Request Sample: http://localhost:9090/lottery/ticket
 Response Sample: 
 [
 {"id":1,"ticketLines":[{"numbers":[2,0,2]},{"numbers":[2,0,2]},{"numbers":[0,1,1]}],"checked":false},
@@ -33,7 +33,7 @@ Response Sample:
 Retrieve Individual Ticket
 Http Method: GET
 /ticket/{id}
-Request Sample: http://localhost:9090/ticket/1
+Request Sample: http://localhost:9090/lottery/ticket/1
 Response Sample: 
 {"id":1,"ticketLines":[{"numbers":[2,0,2]},{"numbers":[2,0,2]},{"numbers":[0,1,1]}],"checked":false}
 
@@ -41,7 +41,7 @@ Response Sample:
 Amend Ticket Lines
 Http Method: PUT
 /ticket/{id}
-Request Sample: http://localhost:9090/ticket/2?lineNumber=2
+Request Sample: http://localhost:9090/lottery/ticket/2?lineNumber=2
 Response Sample: 
 {"id":4,"ticketLines":[{"numbers":[2,1,1]},{"numbers":[2,1,0]}],"checked":false}
 
@@ -49,7 +49,7 @@ Response Sample:
 Retrieve Status of Ticket
 Http Method: PUT
 /status/{id}
-Request Sample: http://localhost:9090/status/1
+Request Sample: http://localhost:9090/lottery/status/1
 Response Sample: 
 {"ticketId":1,"resultList":[{"numbers":[0,1,1],"result":10},{"numbers":[2,0,2],"result":0},{"numbers":[2,0,2],"result":0}],"checked":true}
 

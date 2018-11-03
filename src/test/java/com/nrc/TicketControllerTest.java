@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.ConfigFileApplicationContextInitial
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.nrc.controller.ITicketController;
+import com.nrc.controller.TicketController;
 import com.nrc.exception.InvalidLineNumberException;
 import com.nrc.exception.TicketCheckedException;
 import com.nrc.exception.TicketNotFoundException;
@@ -26,7 +26,7 @@ import com.nrc.model.TicketStatus;
 public class TicketControllerTest {
 
 	@Autowired
-	ITicketController ticketController;
+	TicketController ticketController;
 
 	@Test
 	public void testCreateTicket() {
