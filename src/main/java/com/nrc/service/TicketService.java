@@ -73,7 +73,8 @@ public class TicketService implements ITicketService {
 
 		// ticket line result calculation
 		List<TicketLine> ticketLines = ticket.getTicketLines().stream()
-				.map(StandartResultCalculationStrategy::calculate).sorted(StandartResultCalculationStrategy::compare)
+				.map(StandartResultCalculationStrategy::calculate)
+				.sorted(StandartResultCalculationStrategy::compare)
 				.collect(Collectors.toList());
 		ticket.setTicketLines(ticketLines);
 
