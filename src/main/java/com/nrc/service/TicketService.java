@@ -32,7 +32,7 @@ public class TicketService implements ITicketService {
 	@Override
 	public Ticket createTicket(int numLines) throws IllegalArgumentException {
 		if (numLines <= 0) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("invalid parameters");
 		}
 		Ticket ticket = new Ticket(produceLines(numLines));
 		return ticketRepository.save(ticket);
@@ -40,12 +40,13 @@ public class TicketService implements ITicketService {
 
 	@Override
 	public Ticket amendTicketLines(Ticket ticket, int numLines) throws IllegalArgumentException, IllegalAccessError {
-		if (numLines <= 0) {
-			throw new IllegalArgumentException();
+		if (numLines <= 0 || ticket == null) {
+			throw new IllegalArgumentException("invalid parameters");
 		}
 		if (ticket.isChecked()) {
-			throw new IllegalAccessError();
+			throw new IllegalAccessError("checked ticket can not be amended");
 		}
+
 		ticket.setTicketLines(produceLines(numLines));
 		return ticketRepository.save(ticket);
 	}
@@ -62,13 +63,17 @@ public class TicketService implements ITicketService {
 
 	@Override
 	public TicketStatus checkTicket(Ticket ticket) {
+		if (ticket == null) {
+			throw new IllegalArgumentException("invalid parameters");
+		}
+
 		// mark the ticket as checked
 		ticket.setChecked(true);
 		ticket = ticketRepository.save(ticket);
+
 		// ticket line result calculation
 		List<TicketLine> ticketLines = ticket.getTicketLines().stream()
-				.map(StandartResultCalculationStrategy::calculate)
-				.sorted(StandartResultCalculationStrategy::compare)
+				.map(StandartResultCalculationStrategy::calculate).sorted(StandartResultCalculationStrategy::compare)
 				.collect(Collectors.toList());
 		ticket.setTicketLines(ticketLines);
 
