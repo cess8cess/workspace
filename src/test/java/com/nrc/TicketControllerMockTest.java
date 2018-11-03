@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.nrc.context.ResultCalculationContext;
 import com.nrc.controller.TicketController;
 import com.nrc.exception.InvalidLineNumberException;
 import com.nrc.exception.TicketCheckedException;
@@ -25,7 +23,6 @@ import com.nrc.model.Ticket;
 import com.nrc.model.TicketLine;
 import com.nrc.model.TicketStatus;
 import com.nrc.service.ITicketService;
-import com.nrc.strategy.StandartResultCalculationStrategy;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TicketControllerMockTest {
@@ -127,11 +124,13 @@ public class TicketControllerMockTest {
 
 	private TicketStatus produceTicketStatus(Ticket ticket) {
 		ticket.setChecked(true);
-		ResultCalculationContext context = new ResultCalculationContext();
-		context.setCalculationStrategy(new StandartResultCalculationStrategy());
+		// ResultCalculationContext context = new ResultCalculationContext();
+		// context.setCalculationStrategy(new StandartResultCalculationStrategy());
 
-		ticket.getTicketLines().forEach(line -> line.setResult(context.calculateResult(line.getNumbers())));
-		Collections.sort(ticket.getTicketLines(), (o1, o2) -> o2.getResult() - o1.getResult());
+		// ticket.getTicketLines().forEach(line ->
+		// line.setResult(context.calculateResult(line.getNumbers())));
+		// Collections.sort(ticket.getTicketLines(), (o1, o2) -> o2.getResult() -
+		// o1.getResult());
 
 		return new TicketStatus(ticket);
 	}

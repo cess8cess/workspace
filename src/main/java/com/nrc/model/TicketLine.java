@@ -1,5 +1,8 @@
 package com.nrc.model;
 
+import java.util.function.IntSupplier;
+import java.util.stream.IntStream;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "ticketLines")
 @SequenceGenerator(name = "ticketLinesSeq")
 public class TicketLine {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.TABLE)
 	@Column(name = "id")
@@ -33,6 +37,10 @@ public class TicketLine {
 	public TicketLine(int[] numbers) {
 		super();
 		this.numbers = numbers;
+	}
+
+	public TicketLine(IntSupplier is) {
+		this.numbers = IntStream.generate(is).limit(3).toArray();
 	}
 
 	public long getId() {

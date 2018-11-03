@@ -1,27 +1,26 @@
 package com.nrc.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.nrc.context.NumberGenerationContext;
-import com.nrc.context.ResultCalculationContext;
 import com.nrc.model.Ticket;
 import com.nrc.model.TicketLine;
 import com.nrc.model.TicketStatus;
 import com.nrc.repo.TicketLineRepository;
 import com.nrc.repo.TicketRepository;
-import com.nrc.strategy.StandartNumberGenerationStrategy;
 import com.nrc.strategy.StandartResultCalculationStrategy;
 
 @Service
 public class TicketService implements ITicketService {
+
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
@@ -29,12 +28,6 @@ public class TicketService implements ITicketService {
 
 	@Autowired
 	TicketLineRepository ticketLineRepository;
-
-	@Autowired
-	ResultCalculationContext resultCalculationContext;
-
-	@Autowired
-	NumberGenerationContext numberGenerationContext;
 
 	@Override
 	public Ticket createTicket(int numLines) throws IllegalArgumentException {
@@ -72,16 +65,12 @@ public class TicketService implements ITicketService {
 		// mark the ticket as checked
 		ticket.setChecked(true);
 		ticket = ticketRepository.save(ticket);
-
-		// setting strategy
-		resultCalculationContext.setCalculationStrategy(new StandartResultCalculationStrategy());
-
 		// ticket line result calculation
-		ticket.getTicketLines()
-				.forEach(line -> line.setResult(resultCalculationContext.calculateResult(line.getNumbers())));
-
-		// ticket lines sorting
-		Collections.sort(ticket.getTicketLines(), (o1, o2) -> o2.getResult() - o1.getResult());
+		List<TicketLine> ticketLines = ticket.getTicketLines().stream()
+				.map(StandartResultCalculationStrategy::calculate)
+				.sorted(StandartResultCalculationStrategy::compare)
+				.collect(Collectors.toList());
+		ticket.setTicketLines(ticketLines);
 
 		return new TicketStatus(ticket);
 
@@ -93,11 +82,9 @@ public class TicketService implements ITicketService {
 	 * @return TicketLine List */
 	private List<TicketLine> produceLines(int numLines) {
 		List<TicketLine> lines = new ArrayList<>();
-		// setting strategy
-		numberGenerationContext.setGenerationStrategy(new StandartNumberGenerationStrategy());
 
 		for (int i = 0; i < numLines; i++) {
-			lines.add(new TicketLine(numberGenerationContext.generate()));
+			lines.add(new TicketLine(() -> new Random().nextInt(3)));
 		}
 		return lines;
 	}
