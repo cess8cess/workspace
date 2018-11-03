@@ -71,9 +71,9 @@ public class TicketService implements ITicketService {
 		ticket.setChecked(true);
 		ticket = ticketRepository.save(ticket);
 
-		// ticket line result calculation
+		// calculate each line result, sort the lines according to result value
 		List<TicketLine> ticketLines = ticket.getTicketLines().stream()
-				.map(StandartResultCalculationStrategy::calculate)
+				.map(StandartResultCalculationStrategy::calculate) 
 				.sorted(StandartResultCalculationStrategy::compare)
 				.collect(Collectors.toList());
 		ticket.setTicketLines(ticketLines);
