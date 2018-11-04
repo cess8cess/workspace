@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +35,11 @@ public class TicketServiceTest {
 
 	@Test
 	public void testGetTickets() {
-		Ticket ticket = ticketService.createTicket(3);
-		ticket = ticketService.createTicket(4);
-		ticket = ticketService.createTicket(2);
-		List<Ticket> tickets = ticketService.getTickets();
-		assertTrue(tickets.size() > 0);
+		ticketService.createTicket(3);
+		ticketService.createTicket(4);
+		ticketService.createTicket(2);
+
+		assertTrue(ticketService.getTickets().size() >= 3);
 	}
 
 	@Test
