@@ -1,12 +1,10 @@
 package com.nrc.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.function.IntSupplier;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,9 +86,11 @@ public class TicketService implements ITicketService {
 	 * @param indicates how many lines will be generated
 	 * @return List<TicketLine> ticketLineList */
 	private List<TicketLine> produceLines(int numLines) {
-		IntSupplier is = () -> new Random().nextInt(3);
-		Supplier<TicketLine> tls = () -> new TicketLine(is);
-		return Stream.generate(tls).limit(numLines).collect(Collectors.toList());
+		List<TicketLine> list = new ArrayList<>();
+		for (int i = 0; i < numLines; i++) {
+			list.add(new TicketLine(() -> new Random().nextInt(3)));
+		}
+		return list;
 	}
 
 }
