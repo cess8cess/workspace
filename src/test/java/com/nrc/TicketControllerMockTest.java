@@ -1,31 +1,36 @@
 package com.nrc;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.nrc.controller.TicketController;
-import com.nrc.exception.InvalidLineNumberException;
-import com.nrc.exception.TicketCheckedException;
-import com.nrc.exception.TicketNotFoundException;
 import com.nrc.model.Ticket;
 import com.nrc.model.TicketLine;
 import com.nrc.model.TicketStatus;
 import com.nrc.service.ITicketService;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 public class TicketControllerMockTest {
+
+	private MockMvc mockMvc;
 
 	@Mock
 	ITicketService ticketService;
@@ -33,73 +38,92 @@ public class TicketControllerMockTest {
 	@InjectMocks
 	TicketController ticketController;
 
-	@Test(expected = InvalidLineNumberException.class)
-	public void testCreateTicketInvalidLineNumberException() {
-		ticketController.createTicket(0);
+	@Before
+	public void setUp() throws Exception {
+		mockMvc = MockMvcBuilders.standaloneSetup(ticketController).build();
 	}
 
 	@Test
-	public void testCreateTicket() {
+	public void testCreateTicketInvalidLineNumberException() throws Exception {
+		mockMvc.perform(post("/lottery/ticket?lineNumber=0")).andExpect(status().isNotAcceptable());
+	}
+
+	@Test
+	public void testCreateTicket() throws Exception {
 		Optional<Ticket> fetchedTicket = produceTicket();
-		when(ticketService.createTicket(3)).thenReturn(fetchedTicket.get());
-		assertNotNull(ticketController.createTicket(3));
+		when(ticketService.createTicket(4)).thenReturn(fetchedTicket.get());
+		String expected = "{\"id\":1,\"ticketLines\":[{\"numbers\":[1,0,1]},{\"numbers\":[0,0,0]},{\"numbers\":[2,0,1]},{\"numbers\":[2,2,1]}],\"checked\":false}";
+		String actual = mockMvc.perform(post("/lottery/ticket?lineNumber=4")).andExpect(status().isOk()).andReturn()
+				.getResponse().getContentAsString();
+		assertEquals(expected, actual);
 
 	}
 
 	@Test
-	public void testGetAllTickets() {
+	public void testGetAllTickets() throws Exception {
 		when(ticketService.getTickets()).thenReturn(produceTickets(new int[][] { new int[] { 1, 0, 1 },
 				new int[] { 0, 0, 0 }, new int[] { 2, 0, 1 }, new int[] { 2, 2, 1 } }));
-		assertEquals(2, ticketController.getAllTickets().size());
+		String expected = "[{\"id\":1,\"ticketLines\":[{\"numbers\":[1,0,1]},{\"numbers\":[0,0,0]},{\"numbers\":[2,0,1]},{\"numbers\":[2,2,1]}],\"checked\":false},{\"id\":2,\"ticketLines\":[{\"numbers\":[1,0,1]},{\"numbers\":[0,0,0]},{\"numbers\":[2,0,1]},{\"numbers\":[2,2,1]}],\"checked\":false}]";
+		String actual = mockMvc.perform(get("/lottery/ticket")).andExpect(status().isOk()).andReturn().getResponse()
+				.getContentAsString();
+		assertEquals(expected, actual);
 	}
 
 	@Test
-	public void testGetTicketById() {
+	public void testGetTicketById() throws Exception {
 		when(ticketService.getTicketById(1L)).thenReturn(produceTicket());
-		assertNotNull(ticketController.getTicketById(1L));
-
-	}
-
-	@Test(expected = TicketNotFoundException.class)
-	public void testGetTicketByIdTicketNotFoundException() {
-		ticketController.getTicketById(1L);
+		String expected = "{\"id\":1,\"ticketLines\":[{\"numbers\":[1,0,1]},{\"numbers\":[0,0,0]},{\"numbers\":[2,0,1]},{\"numbers\":[2,2,1]}],\"checked\":false}";
+		String actual = mockMvc.perform(get("/lottery/ticket/1")).andExpect(status().isOk()).andReturn().getResponse()
+				.getContentAsString();
+		assertEquals(expected, actual);
 	}
 
 	@Test
-	public void testAmendTicket() {
+	public void testGetTicketByIdTicketNotFoundException() throws Exception {
+		mockMvc.perform(get("/lottery/ticket/1")).andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void testAmendTicket() throws Exception {
 		Optional<Ticket> fetchedTicket = produceTicket();
 		Ticket amendedTicket = produceAmendedTicket();
 		when(ticketService.getTicketById(1L)).thenReturn(fetchedTicket);
 		when(ticketService.amendTicketLines(fetchedTicket.get(), 2)).thenReturn(amendedTicket);
-		assertEquals(2, ticketController.amendTicket(1L, 2).getTicketLines().size());
-	}
-
-	@Test(expected = TicketNotFoundException.class)
-	public void testAmendTicketTicketNotFoundException() {
-		ticketController.amendTicket(1L, 2);
-	}
-
-	@Test(expected = TicketCheckedException.class)
-	public void testAmendTicketCheckedException() {
-		Optional<Ticket> fetchedTicket = produceTicket();
-		fetchedTicket.get().setChecked(true);
-		when(ticketService.getTicketById(1L)).thenReturn(fetchedTicket);
-		ticketController.amendTicket(1L, 2);
+		String expected = "{\"id\":1,\"ticketLines\":[{\"numbers\":[1,0,1]},{\"numbers\":[0,0,0]}],\"checked\":false}";
+		String actual = mockMvc.perform(put("/lottery/ticket/1?lineNumber=2")).andExpect(status().isOk()).andReturn()
+				.getResponse().getContentAsString();
+		assertEquals(expected, actual);
 	}
 
 	@Test
-	public void testCheckTicket() {
+	public void testAmendTicketTicketNotFoundException() throws Exception {
+		mockMvc.perform(put("/lottery/ticket/1?lineNumber=2")).andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void testAmendTicketCheckedException() throws Exception {
+		Optional<Ticket> fetchedTicket = produceTicket();
+		fetchedTicket.get().setChecked(true);
+		when(ticketService.getTicketById(1L)).thenReturn(fetchedTicket);
+		mockMvc.perform(put("/lottery/ticket/1?lineNumber=2")).andExpect(status().isMethodNotAllowed());
+	}
+
+	@Test
+	public void testCheckTicket() throws Exception {
 		Optional<Ticket> fetchedTicket = produceTicket();
 
 		when(ticketService.getTicketById(1L)).thenReturn(fetchedTicket);
 		when(ticketService.checkTicket(fetchedTicket.get())).thenReturn(produceTicketStatus(fetchedTicket.get()));
-		assertNotNull(ticketController.checkTicket(1L));
+		String expected = "{\"ticketId\":1,\"resultList\":[{\"numbers\":[1,0,1],\"result\":0},{\"numbers\":[0,0,0],\"result\":0},{\"numbers\":[2,0,1],\"result\":0},{\"numbers\":[2,2,1],\"result\":0}],\"checked\":true}";
+		String actual = mockMvc.perform(put("/lottery/status/1")).andExpect(status().isOk()).andReturn().getResponse()
+				.getContentAsString();
+		assertEquals(expected, actual);
 
 	}
 
-	@Test(expected = TicketNotFoundException.class)
-	public void testCheckTicketTicketNotFoundException() {
-		ticketController.checkTicket(1L);
+	@Test
+	public void testCheckTicketTicketNotFoundException() throws Exception {
+		mockMvc.perform(put("/lottery/status/1")).andExpect(status().isNotFound());
 	}
 
 	private List<Ticket> produceTickets(int[][] lineNumbers) {
@@ -124,14 +148,6 @@ public class TicketControllerMockTest {
 
 	private TicketStatus produceTicketStatus(Ticket ticket) {
 		ticket.setChecked(true);
-		// ResultCalculationContext context = new ResultCalculationContext();
-		// context.setCalculationStrategy(new StandartResultCalculationStrategy());
-
-		// ticket.getTicketLines().forEach(line ->
-		// line.setResult(context.calculateResult(line.getNumbers())));
-		// Collections.sort(ticket.getTicketLines(), (o1, o2) -> o2.getResult() -
-		// o1.getResult());
-
 		return new TicketStatus(ticket);
 	}
 

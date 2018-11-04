@@ -16,7 +16,7 @@ import com.nrc.model.TicketLine;
 import com.nrc.model.TicketStatus;
 import com.nrc.repo.TicketLineRepository;
 import com.nrc.repo.TicketRepository;
-import com.nrc.strategy.StandartResultCalculationStrategy;
+import com.nrc.strategy.ResultCalculationStrategy;
 
 @Service
 public class TicketService implements ITicketService {
@@ -73,8 +73,8 @@ public class TicketService implements ITicketService {
 
 		// calculate each line result, sort the lines according to result value
 		List<TicketLine> ticketLines = ticket.getTicketLines().stream()
-				.map(StandartResultCalculationStrategy::calculate) 
-				.sorted(StandartResultCalculationStrategy::compare)
+				.map(ResultCalculationStrategy::standartCalculate) 
+				.sorted(ResultCalculationStrategy::compareResultGreaterFirst)
 				.collect(Collectors.toList());
 		ticket.setTicketLines(ticketLines);
 

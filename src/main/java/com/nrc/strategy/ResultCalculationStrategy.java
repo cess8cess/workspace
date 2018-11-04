@@ -3,26 +3,22 @@ package com.nrc.strategy;
 import java.util.Arrays;
 import java.util.function.IntPredicate;
 
-
 import com.nrc.model.TicketLine;
 
-public interface StandartResultCalculationStrategy {
+public interface ResultCalculationStrategy {
 
-	/** 
-	 * sum of the array values equals 2 then result is 10 <br> 
-	 * array values are all the same then result is 5 <br> 
-	 * 2nd and 3rd elements are different than 1st element then result is 1 <br>
-	 * otherwise result is 0 <br>
+	/** sum of the array values equals 2 then result is 10 <br> array values are all
+	 * the same then result is 5 <br> 2nd and 3rd elements are different than 1st
+	 * element then result is 1 <br> otherwise result is 0 <br>
 	 *
 	 * @param line TicketLine
 	 * @return TicketLine
 	 * 
 	 * @numbers [0,1,1] -> 10 <br>
 	 * @numbers [1,1,1] -> 5 <br>
-	 * @numbers [2,1,0] -> 1 <br> 
-	 * @numbers [1,1,2] -> 0 <br>
-	 * */
-	 static TicketLine calculate(TicketLine line) {
+	 * @numbers [2,1,0] -> 1 <br>
+	 * @numbers [1,1,2] -> 0 <br> */
+	static TicketLine standartCalculate(TicketLine line) {
 		int[] numbers = line.getNumbers();
 		IntPredicate p = num -> num == numbers[0];
 		int result = 0;
@@ -41,12 +37,20 @@ public interface StandartResultCalculationStrategy {
 		line.setResult(result);
 		return line;
 	}
+
+	/** 
+	 * compare ticket lines according to result value, result sorting 
+	 * 10, 5, 1, 0
+	 */
+	static int compareResultGreaterFirst(TicketLine t1, TicketLine t2) {
+		return t2.getResult() - t1.getResult();
+	}
 	
-	/**
-	 * compare ticket lines according to result value,
-	 * result sorting 10, 5, 1, 0
-	 * */
-	 static int compare(TicketLine t1, TicketLine t2) {
+	/** 
+	 * compare ticket lines according to result value, result sorting 
+	 * 0, 1, 5, 10
+	 */
+	static int compareResultLessFirst(TicketLine t1, TicketLine t2) {
 		return t2.getResult() - t1.getResult();
 	}
 

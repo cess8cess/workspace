@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.nrc.model.TicketLine;
-import com.nrc.strategy.StandartResultCalculationStrategy;
+import com.nrc.strategy.ResultCalculationStrategy;
 
 @RunWith(SpringRunner.class)
 public class StandartResultCalculationStrategyTest {
@@ -21,8 +21,8 @@ public class StandartResultCalculationStrategyTest {
 		int[][] arr = { new int[] { 0, 1, 1 }, new int[] { 1, 0, 1 }, new int[] { 1, 1, 0 }, new int[] { 2, 0, 0 },
 				new int[] { 0, 2, 0 }, new int[] { 0, 0, 2 } };
 
-		for (int[] is : arr) {
-			assertEquals(10, StandartResultCalculationStrategy.calculate(new TicketLine(is)).getResult());
+		for (int[] nums : arr) {
+			assertEquals(10, ResultCalculationStrategy.standartCalculate(new TicketLine(nums)).getResult());
 		}
 	}
 
@@ -30,8 +30,8 @@ public class StandartResultCalculationStrategyTest {
 	public void testCalculateResults5() {
 		int[][] arr = { new int[] { 0, 0, 0 }, new int[] { 1, 1, 1 }, new int[] { 2, 2, 2 }, };
 
-		for (int[] is : arr) {
-			assertEquals(5, StandartResultCalculationStrategy.calculate(new TicketLine(is)).getResult());
+		for (int[] nums : arr) {
+			assertEquals(5, ResultCalculationStrategy.standartCalculate(new TicketLine(nums)).getResult());
 		}
 	}
 
@@ -41,8 +41,8 @@ public class StandartResultCalculationStrategyTest {
 				new int[] { 1, 0, 2 }, new int[] { 2, 1, 0 }, new int[] { 2, 0, 1 }, new int[] { 2, 1, 1 },
 				new int[] { 0, 2, 2 }, new int[] { 1, 2, 2 }, };
 
-		for (int[] is : arr) {
-			assertEquals(1, StandartResultCalculationStrategy.calculate(new TicketLine(is)).getResult());
+		for (int[] nums : arr) {
+			assertEquals(1, ResultCalculationStrategy.standartCalculate(new TicketLine(nums)).getResult());
 		}
 	}
 
@@ -51,8 +51,8 @@ public class StandartResultCalculationStrategyTest {
 		int[][] arr = { new int[] { 0, 0, 1 }, new int[] { 0, 1, 0 }, new int[] { 1, 1, 2 }, new int[] { 1, 2, 1 },
 				new int[] { 2, 1, 2 }, new int[] { 2, 2, 1 } };
 
-		for (int[] is : arr) {
-			assertEquals(0, StandartResultCalculationStrategy.calculate(new TicketLine(is)).getResult());
+		for (int[] nums : arr) {
+			assertEquals(0, ResultCalculationStrategy.standartCalculate(new TicketLine(nums)).getResult());
 		}
 	}
 
@@ -72,11 +72,9 @@ public class StandartResultCalculationStrategyTest {
 		line.setResult(1);
 		lines.add(line);
 
-		Collections.sort(lines, StandartResultCalculationStrategy::compare);
-		
-		String resultPrint = lines.stream()
-				.map(l -> String.valueOf(l.getResult()))
-				.reduce("", (a, b) -> a + "," + b);
+		Collections.sort(lines, ResultCalculationStrategy::compareResultGreaterFirst);
+
+		String resultPrint = lines.stream().map(l -> String.valueOf(l.getResult())).reduce("", (a, b) -> a + "," + b);
 		assertEquals(",10,5,1,0", resultPrint);
 
 	}
