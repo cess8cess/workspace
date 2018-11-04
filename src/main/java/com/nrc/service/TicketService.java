@@ -1,10 +1,12 @@
 package com.nrc.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.function.IntSupplier;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,9 +75,8 @@ public class TicketService implements ITicketService {
 
 		// calculate each line result, sort the lines according to result value
 		List<TicketLine> ticketLines = ticket.getTicketLines().stream()
-				.map(ResultCalculationStrategy::standartCalculate) 
-				.sorted(ResultCalculationStrategy::compareResultGreaterFirst)
-				.collect(Collectors.toList());
+				.map(ResultCalculationStrategy::standartCalculate)
+				.sorted(ResultCalculationStrategy::compareResultGreaterFirst).collect(Collectors.toList());
 		ticket.setTicketLines(ticketLines);
 
 		return new TicketStatus(ticket);
@@ -85,14 +86,11 @@ public class TicketService implements ITicketService {
 	/** Produce lines.
 	 *
 	 * @param indicates how many lines will be generated
-	 * @return TicketLine List */
+	 * @return List<TicketLine> ticketLineList */
 	private List<TicketLine> produceLines(int numLines) {
-		List<TicketLine> lines = new ArrayList<>();
-
-		for (int i = 0; i < numLines; i++) {
-			lines.add(new TicketLine(() -> new Random().nextInt(3)));
-		}
-		return lines;
+		IntSupplier is = () -> new Random().nextInt(3);
+		Supplier<TicketLine> tls = () -> new TicketLine(is);
+		return Stream.generate(tls).limit(numLines).collect(Collectors.toList());
 	}
 
 }
