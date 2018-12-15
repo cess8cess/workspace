@@ -14,8 +14,8 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "ticketLines")
-@SequenceGenerator(name = "ticketLinesSeq")
+@Table(name = "ticketLine")
+@SequenceGenerator(name = "ticketLineSeq")
 public class TicketLine {
 
 	@Id

@@ -46,7 +46,7 @@ public class TicketService implements ITicketService {
 		if (ticket.isChecked()) {
 			throw new IllegalAccessError("checked ticket can not be amended");
 		}
-
+		// ticket.getTicketLines().addAll(produceLines(numLines));
 		ticket.setTicketLines(produceLines(numLines));
 		return ticketRepository.save(ticket);
 	}

@@ -38,18 +38,14 @@ public interface ResultCalculationStrategy {
 		return line;
 	}
 
-	/** 
-	 * compare ticket lines according to result value, result sorting 
-	 * 10, 5, 1, 0
-	 */
+	/** compare ticket lines according to result value, result sorting 10, 5, 1,
+	 * 0 */
 	static int compareResultGreaterFirst(TicketLine t1, TicketLine t2) {
 		return t2.getResult() - t1.getResult();
 	}
-	
-	/** 
-	 * compare ticket lines according to result value, result sorting 
-	 * 0, 1, 5, 10
-	 */
+
+	/** compare ticket lines according to result value, result sorting 0, 1, 5,
+	 * 10 */
 	static int compareResultLessFirst(TicketLine t1, TicketLine t2) {
 		return t2.getResult() - t1.getResult();
 	}

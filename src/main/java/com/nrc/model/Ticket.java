@@ -14,8 +14,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "tickets")
-@SequenceGenerator(name = "ticketsSeq")
+@Table(name = "ticket")
+@SequenceGenerator(name = "ticketSeq")
 public class Ticket {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,7 +25,7 @@ public class Ticket {
 	@Column(name = "checked")
 	private boolean isChecked = false;
 
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<TicketLine> ticketLines;
 
 	public Ticket(List<TicketLine> ticketLines) {
